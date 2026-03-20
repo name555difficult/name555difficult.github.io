@@ -7,7 +7,6 @@ export type TaxonomyPostReference = {
   title: string;
   date: string;
   summary: string;
-  pdf: string;
   taxonomy: string[];
   featured: boolean;
 };
@@ -40,7 +39,6 @@ const toPostReference = (post: BlogPost): TaxonomyPostReference => ({
   title: post.data.title,
   date: post.data.date.toISOString(),
   summary: post.data.summary,
-  pdf: post.data.pdf,
   taxonomy: post.data.taxonomy,
   featured: Boolean(post.data.featured),
 });

@@ -17,7 +17,6 @@ const blog = defineCollection({
       title: z.string(),
       date: z.coerce.date(),
       summary: z.string().min(20),
-      pdf: z.string().regex(/^\/pdfs\/.+\.pdf$/),
       taxonomy: z.array(taxonomyPath).min(1),
       tags: z.array(z.string()).default([]),
       featured: z.boolean().optional(),

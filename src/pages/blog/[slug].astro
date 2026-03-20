@@ -1,5 +1,5 @@
 ---
-import PdfPostLayout from "@/layouts/PdfPostLayout.astro";
+import MarkdownPostLayout from "@/layouts/MarkdownPostLayout.astro";
 import { getPublishedPosts } from "@/lib/content";
 import { getRelatedPosts } from "@/lib/related";
 
@@ -16,4 +16,4 @@ const { post, posts } = Astro.props;
 const relatedPosts = getRelatedPosts(post, posts);
 ---
 
-<PdfPostLayout post={post} relatedPosts={relatedPosts} />
+<MarkdownPostLayout post={post} relatedPosts={relatedPosts} />

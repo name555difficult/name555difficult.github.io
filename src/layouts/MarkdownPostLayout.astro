@@ -1,0 +1,131 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import BaseLayout from "./BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Datetime from "@/components/Datetime.astro";
+import TaxonomyBreadcrumb from "@/components/TaxonomyBreadcrumb.astro";
+import RelatedPosts from "@/components/RelatedPosts.astro";
+import { SITE } from "@/config";
+import type { BlogPost } from "@/lib/content";
+
+type Props = {
+  post: CollectionEntry<"blog">;
+  relatedPosts: BlogPost[];
+};
+
+const { post, relatedPosts } = Astro.props;
+const { Content, headings } = await render(post);
+const tocHeadings = headings.filter(
+  heading => heading.depth > 1 && heading.depth <= 3
+);
+const body = post.body ?? "";
+const wordCount = body
+  .split(/\s+/u)
+  .map(token => token.trim())
+  .filter(Boolean).length;
+const readingMinutes = Math.max(1, Math.round(wordCount / 220));
+const primaryTaxonomy = post.data.taxonomy[0];
+---
+
+<BaseLayout
+  title={`${post.data.title} | ${SITE.title}`}
+  description={post.data.summary}
+  pubDatetime={post.data.date}
+>
+  <Header />
+  <main id="main-content" class="page-layout py-8 sm:py-10">
+    <section class="surface-panel-strong px-5 py-6 sm:px-8 sm:py-8">
+      <div class="section-label">Markdown Article</div>
+      <h1
+        class="mt-4 max-w-5xl text-3xl leading-tight font-semibold tracking-tight sm:text-5xl"
+      >
+        {post.data.title}
+      </h1>
+
+      <div
+        class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-foreground/60"
+      >
+        <Datetime pubDatetime={post.data.date} size="lg" />
+        <span>{readingMinutes} min read</span>
+        <span>{wordCount} words</span>
+      </div>
+
+      <p
+        class="mt-5 max-w-4xl text-base leading-8 text-foreground/72 sm:text-lg"
+      >
+        {post.data.summary}
+      </p>
+
+      <div class="mt-6">
+        <TaxonomyBreadcrumb taxonomy={post.data.taxonomy} />
+      </div>
+
+      {
+        post.data.tags.length > 0 && (
+          <div class="mt-6 flex flex-wrap gap-2">
+            {post.data.tags.map(tag => (
+              <span class="taxonomy-chip">#{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </section>
+
+    <div
+      class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.65fr)_minmax(280px,0.75fr)]"
+    >
+      <article class="surface-panel-strong px-5 py-6 sm:px-8 sm:py-8">
+        <div class="app-prose max-w-none">
+          <Content />
+        </div>
+      </article>
+
+      <aside class="space-y-5 xl:sticky xl:top-6 xl:self-start">
+        <section class="surface-panel px-5 py-5 sm:px-6">
+          <div class="section-label">Post Links</div>
+          <div class="mt-4 flex flex-wrap gap-3">
+            <a href="/blog" class="reader-action">Back to blog</a>
+            {
+              primaryTaxonomy && (
+                <a
+                  href={`/architecture?focus=${encodeURIComponent(primaryTaxonomy)}`}
+                  class="reader-action"
+                >
+                  View topic
+                </a>
+              )
+            }
+          </div>
+        </section>
+
+        <section class="surface-panel px-5 py-5 sm:px-6">
+          <div class="section-label">On This Page</div>
+          {
+            tocHeadings.length > 0 ? (
+              <nav aria-label="Table of contents" class="mt-4 space-y-1">
+                {tocHeadings.map(heading => (
+                  <a
+                    href={`#${heading.slug}`}
+                    class="block rounded-2xl px-3 py-2 text-sm leading-6 text-foreground/68 transition-colors hover:bg-background/70 hover:text-accent"
+                    style={`padding-inline-start: ${(heading.depth - 2) * 16 + 12}px;`}
+                  >
+                    {heading.text}
+                  </a>
+                ))}
+              </nav>
+            ) : (
+              <p class="mt-4 text-sm leading-7 text-foreground/68">
+                Add `##` or `###` headings inside the article and they will
+                appear here automatically.
+              </p>
+            )
+          }
+        </section>
+      </aside>
+    </div>
+
+    <RelatedPosts posts={relatedPosts} />
+  </main>
+  <Footer />
+</BaseLayout>

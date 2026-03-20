@@ -2,7 +2,7 @@ export const SITE = {
   website: "https://name555difficult.github.io/",
   author: "Wang Zhengbao",
   profile: "https://github.com/name555difficult",
-  desc: "A personal GitHub Pages homepage for projects, PDF notes, and technical experiments.",
+  desc: "A personal GitHub Pages homepage for projects, markdown notes, and technical experiments.",
   title: "Wang Zhengbao",
   ogImage: "astropaper-og.jpg",
   lightAndDarkMode: true,
@@ -18,10 +18,10 @@ export const PROFILE = {
   title: "Student at Northwestern Polytechnical University",
   location: "Northwestern Polytechnical University",
   tagline:
-    "A project homepage for code, experiments, and PDF-first technical notes.",
+    "A project homepage for code, experiments, and long-form technical writing.",
   summary: [
-    "The public GitHub profile describes Wang Zhengbao as a student of Northwestern Polytechnical University. This site extends that profile into a cleaner project homepage with a PDF-first writing workflow.",
-    "The homepage combines lightweight project discovery, structured blog metadata, and a wide PDF reader so longer notes can live in their original format instead of being squeezed into a narrow blog column.",
+    "The public GitHub profile describes Wang Zhengbao as a student of Northwestern Polytechnical University. This site extends that profile into a cleaner project homepage for project discovery and technical writing.",
+    "The homepage combines lightweight navigation, structured blog metadata, and a markdown-native archive so research notes can be written, edited, and published with much less friction.",
   ],
   interests: [
     "3D scene understanding",
@@ -31,7 +31,7 @@ export const PROFILE = {
   ],
   keywords: [
     "GitHub projects",
-    "PDF-first publishing",
+    "Markdown publishing",
     "SLAM",
     "3D vision",
     "GitHub Pages",

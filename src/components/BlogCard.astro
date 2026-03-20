@@ -11,6 +11,7 @@ type Props = {
 
 const { post, compact = false } = Astro.props;
 const topLevelTaxonomies = getTopLevelTaxonomy(post);
+const primaryTaxonomy = post.data.taxonomy[0];
 ---
 
 <li
@@ -64,16 +65,18 @@ const topLevelTaxonomies = getTopLevelTaxonomy(post);
 
     <div class="flex flex-wrap gap-4 text-sm">
       <a href={getBlogPath(post)} class="font-medium text-accent">
-        Read note
+        Read article
       </a>
-      <a
-        href={post.data.pdf}
-        target="_blank"
-        rel="noreferrer"
-        class="text-foreground/65"
-      >
-        Open PDF
-      </a>
+      {
+        primaryTaxonomy && (
+          <a
+            href={`/architecture?focus=${encodeURIComponent(primaryTaxonomy)}`}
+            class="text-foreground/65"
+          >
+            View topic
+          </a>
+        )
+      }
     </div>
   </article>
 </li>
