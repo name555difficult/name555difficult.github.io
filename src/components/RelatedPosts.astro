@@ -1,0 +1,38 @@
+---
+import type { BlogPost } from "@/lib/content";
+import { getBlogPath } from "@/lib/content";
+import Datetime from "./Datetime.astro";
+
+type Props = {
+  posts: BlogPost[];
+};
+
+const { posts } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section class="mt-5 surface-panel-strong px-5 py-6 sm:px-6">
+      <div class="section-label">Related</div>
+      <h2 class="mt-3 text-2xl font-semibold tracking-tight">
+        Continue reading
+      </h2>
+      <div class="mt-6 grid gap-4 lg:grid-cols-3">
+        {posts.map(post => (
+          <article class="rounded-3xl border border-border bg-background/70 p-4">
+            <a
+              href={getBlogPath(post)}
+              class="text-lg font-semibold tracking-tight hover:text-accent"
+            >
+              {post.data.title}
+            </a>
+            <Datetime class="mt-3" pubDatetime={post.data.date} />
+            <p class="mt-3 text-sm leading-6 text-foreground/72">
+              {post.data.summary}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}

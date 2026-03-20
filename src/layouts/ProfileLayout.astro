@@ -1,0 +1,22 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE } from "@/config";
+
+type Props = {
+  title?: string;
+  description?: string;
+};
+
+const { title = `Profile | ${SITE.title}`, description = SITE.desc } =
+  Astro.props;
+---
+
+<BaseLayout {title} {description}>
+  <Header />
+  <main id="main-content" class="page-layout py-8 sm:py-10">
+    <slot />
+  </main>
+  <Footer />
+</BaseLayout>

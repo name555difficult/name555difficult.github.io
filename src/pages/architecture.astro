@@ -1,0 +1,37 @@
+---
+import BlogListLayout from "@/layouts/BlogListLayout.astro";
+import TaxonomyTree from "@/components/TaxonomyTree";
+import { getPublishedPosts } from "@/lib/content";
+import { buildTaxonomyTree, countTaxonomyLeaves } from "@/lib/taxonomy";
+
+const posts = await getPublishedPosts();
+const taxonomyTree = buildTaxonomyTree(posts);
+const taxonomyLeafCount = countTaxonomyLeaves(taxonomyTree);
+---
+
+<BlogListLayout
+  title="Architecture"
+  eyebrow="Knowledge Map"
+  description="Every taxonomy path is parsed from blog metadata and merged into a live hierarchy, so the structure always stays in sync with the content."
+>
+  <section
+    class="mt-6 grid gap-4 surface-panel px-5 py-6 sm:grid-cols-3 sm:px-6"
+  >
+    <div class="metric-card">
+      <div class="section-label">Posts</div>
+      <div class="mt-3 text-3xl font-semibold">{posts.length}</div>
+    </div>
+    <div class="metric-card">
+      <div class="section-label">Leaf Nodes</div>
+      <div class="mt-3 text-3xl font-semibold">{taxonomyLeafCount}</div>
+    </div>
+    <div class="metric-card">
+      <div class="section-label">Source Of Truth</div>
+      <div class="mt-3 text-lg font-medium">`src/content/blog/*.md`</div>
+    </div>
+  </section>
+
+  <section class="mt-6">
+    <TaxonomyTree client:only="react" data={taxonomyTree} />
+  </section>
+</BlogListLayout>

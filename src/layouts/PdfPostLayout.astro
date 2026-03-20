@@ -1,0 +1,126 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import BaseLayout from "./BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Datetime from "@/components/Datetime.astro";
+import TaxonomyBreadcrumb from "@/components/TaxonomyBreadcrumb.astro";
+import RelatedPosts from "@/components/RelatedPosts.astro";
+import PdfViewer from "@/components/PdfViewer";
+import { SITE } from "@/config";
+import type { BlogPost } from "@/lib/content";
+
+type Props = {
+  post: CollectionEntry<"blog">;
+  relatedPosts: BlogPost[];
+};
+
+const { post, relatedPosts } = Astro.props;
+const { Content } = await render(post);
+const hasGuide = Boolean(post.body?.trim());
+---
+
+<BaseLayout
+  title={`${post.data.title} | ${SITE.title}`}
+  description={post.data.summary}
+  pubDatetime={post.data.date}
+>
+  <Header />
+  <main id="main-content" class="reader-layout py-8 sm:py-10">
+    <article
+      class="overflow-hidden surface-panel-strong px-5 py-6 sm:px-8 sm:py-8"
+    >
+      <div class="section-label">PDF Note</div>
+      <h1
+        class="mt-4 text-3xl leading-tight font-semibold tracking-tight sm:text-5xl"
+      >
+        {post.data.title}
+      </h1>
+      <Datetime class="mt-4" pubDatetime={post.data.date} size="lg" />
+      <p
+        class="mt-5 max-w-4xl text-base leading-8 text-foreground/72 sm:text-lg"
+      >
+        {post.data.summary}
+      </p>
+
+      <div class="mt-6">
+        <TaxonomyBreadcrumb taxonomy={post.data.taxonomy} />
+      </div>
+
+      {
+        hasGuide && (
+          <div class="app-prose mt-8 max-w-4xl rounded-[28px] border border-border bg-background/72 px-5 py-5">
+            <Content />
+          </div>
+        )
+      }
+    </article>
+
+    <section class="mt-5 surface-panel px-5 py-5 sm:px-6">
+      <div class="section-label">Reader Actions</div>
+      <div class="mt-4 flex flex-wrap gap-3">
+        <a
+          href={post.data.pdf}
+          target="_blank"
+          rel="noreferrer"
+          class="reader-action"
+        >
+          Open raw PDF
+        </a>
+        <a href={post.data.pdf} download class="reader-action">
+          Download PDF
+        </a>
+        <button
+          type="button"
+          class="reader-action"
+          data-fullscreen-button
+          data-target="pdf-reader-panel"
+        >
+          Fullscreen Reader
+        </button>
+      </div>
+    </section>
+
+    <section class="mt-5 surface-panel-strong p-3 sm:p-5">
+      <PdfViewer
+        client:only="react"
+        pdfUrl={post.data.pdf}
+        viewerId="pdf-reader-panel"
+      />
+    </section>
+
+    <RelatedPosts posts={relatedPosts} />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  function bindFullscreenButtons() {
+    const buttons = Array.from(
+      document.querySelectorAll("button[data-fullscreen-button]")
+    ) as HTMLButtonElement[];
+
+    buttons.forEach(button => {
+      if (button.dataset.bound === "true") return;
+
+      button.dataset.bound = "true";
+
+      button.addEventListener("click", async () => {
+        const targetId = button.dataset.target;
+        const target = targetId ? document.getElementById(targetId) : null;
+
+        if (!target) return;
+
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+          return;
+        }
+
+        await target.requestFullscreen();
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", bindFullscreenButtons);
+  document.addEventListener("astro:after-swap", bindFullscreenButtons);
+</script>

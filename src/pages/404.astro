@@ -1,0 +1,26 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE } from "@/config";
+---
+
+<BaseLayout title={`404 | ${SITE.title}`} description="Page not found.">
+  <Header />
+  <main id="main-content" class="page-layout py-10">
+    <section class="surface-panel-strong px-5 py-10 text-center sm:px-6">
+      <div class="section-label">404</div>
+      <h1 class="section-title mt-3">This page is not in the archive.</h1>
+      <p class="lead-copy mx-auto mt-4">
+        Try the profile page, browse the blog index, or use the architecture map
+        to jump back into the knowledge structure.
+      </p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <a href="/" class="reader-action">Profile</a>
+        <a href="/blog" class="reader-action">Blog</a>
+        <a href="/architecture" class="reader-action">Architecture</a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

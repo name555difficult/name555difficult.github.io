@@ -1,0 +1,137 @@
+---
+import { Font } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
+import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
+import { SITE } from "@/config";
+import "@/styles/global.css";
+
+type Props = {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonicalURL?: URL | string;
+  pubDatetime?: Date;
+};
+
+const {
+  title = SITE.title,
+  description = SITE.desc,
+  ogImage = SITE.ogImage,
+  canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url),
+  pubDatetime,
+} = Astro.props;
+
+const siteUrl = Astro.site ?? new URL(SITE.website);
+const resolvedCanonical =
+  typeof canonicalURL === "string"
+    ? new URL(canonicalURL, siteUrl)
+    : canonicalURL;
+const resolvedOgImage = new URL(ogImage, siteUrl).href;
+const structuredData = pubDatetime
+  ? {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: title,
+      image: resolvedOgImage,
+      datePublished: pubDatetime.toISOString(),
+      author: [
+        {
+          "@type": "Person",
+          name: SITE.author,
+          url: SITE.profile,
+        },
+      ],
+    }
+  : {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: SITE.title,
+      description,
+      url: siteUrl.href,
+    };
+---
+
+<!doctype html>
+<html dir={SITE.dir} lang={SITE.lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#125e6d" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={resolvedCanonical} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <Font
+      cssVariable="--font-research-sans"
+      preload={[{ subset: "latin", weight: 400, style: "normal" }]}
+    />
+
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.author} />
+
+    <meta property="og:type" content={pubDatetime ? "article" : "website"} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={resolvedCanonical} />
+    <meta property="og:image" content={resolvedOgImage} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={resolvedOgImage} />
+
+    {
+      pubDatetime && (
+        <meta
+          property="article:published_time"
+          content={pubDatetime.toISOString()}
+        />
+      )
+    }
+
+    {
+      PUBLIC_GOOGLE_SITE_VERIFICATION && (
+        <meta
+          name="google-site-verification"
+          content={PUBLIC_GOOGLE_SITE_VERIFICATION}
+        />
+      )
+    }
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(structuredData)}
+    />
+
+    <ClientRouter />
+
+    <script is:inline>
+      (function () {
+        const currentTheme = localStorage.getItem("theme");
+        const themeValue =
+          currentTheme ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+
+        document.firstElementChild?.setAttribute("data-theme", themeValue);
+
+        window.theme = {
+          themeValue,
+          getTheme: () => window.theme.themeValue,
+          setTheme: value => {
+            window.theme.themeValue = value;
+          },
+        };
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+    <script src="../scripts/theme.ts"></script>
+  </body>
+</html>

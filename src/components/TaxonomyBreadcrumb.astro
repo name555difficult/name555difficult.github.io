@@ -1,0 +1,23 @@
+---
+import TaxonomyChip from "./TaxonomyChip.astro";
+
+type Props = {
+  taxonomy: string[];
+};
+
+const { taxonomy } = Astro.props;
+---
+
+<div class="space-y-3">
+  <div class="section-label">Taxonomy</div>
+  <div class="flex flex-wrap gap-2">
+    {
+      taxonomy.map(path => (
+        <TaxonomyChip
+          path={path}
+          href={`/architecture?focus=${encodeURIComponent(path)}`}
+        />
+      ))
+    }
+  </div>
+</div>

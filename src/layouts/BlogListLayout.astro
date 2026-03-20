@@ -1,0 +1,28 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE } from "@/config";
+
+type Props = {
+  title: string;
+  description: string;
+  eyebrow?: string;
+};
+
+const { title, description, eyebrow = "Index" } = Astro.props;
+const pageTitle = `${title} | ${SITE.title}`;
+---
+
+<BaseLayout title={pageTitle} {description}>
+  <Header />
+  <main id="main-content" class="page-layout py-8 sm:py-10">
+    <section class="surface-panel-strong px-5 py-6 sm:px-6 sm:py-7">
+      <div class="section-label">{eyebrow}</div>
+      <h1 class="section-title mt-3">{title}</h1>
+      <p class="lead-copy mt-4">{description}</p>
+    </section>
+    <slot />
+  </main>
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,142 @@
+@import "tailwindcss";
+@import "./typography.css";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root,
+html[data-theme="light"] {
+  --background: #f5f3ee;
+  --foreground: #18212f;
+  --accent: #125e6d;
+  --accent-soft: #d7ebe7;
+  --muted: #e3dfd7;
+  --surface: rgba(255, 255, 255, 0.68);
+  --surface-strong: rgba(255, 255, 255, 0.88);
+  --border: rgba(24, 33, 47, 0.12);
+}
+
+html[data-theme="dark"] {
+  --background: #0f1621;
+  --foreground: #edf1f6;
+  --accent: #80d4c8;
+  --accent-soft: rgba(128, 212, 200, 0.14);
+  --muted: #1c2634;
+  --surface: rgba(18, 25, 36, 0.72);
+  --surface-strong: rgba(18, 25, 36, 0.92);
+  --border: rgba(237, 241, 246, 0.12);
+}
+
+@theme inline {
+  --font-app: var(--font-research-sans);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-border: var(--border);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-accent/75;
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-muted) transparent;
+  }
+  html {
+    @apply overflow-y-scroll scroll-smooth;
+  }
+  body {
+    @apply flex min-h-svh flex-col bg-background font-app text-foreground selection:bg-accent/75 selection:text-background;
+    background-image:
+      radial-gradient(
+        circle at top left,
+        rgba(18, 94, 109, 0.14),
+        transparent 28%
+      ),
+      radial-gradient(
+        circle at top right,
+        rgba(24, 33, 47, 0.1),
+        transparent 24%
+      ),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 24%);
+  }
+  a,
+  button {
+    @apply outline-offset-1 outline-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility max-w-app {
+  @apply max-w-7xl;
+}
+
+@utility app-layout {
+  @apply mx-auto w-full max-w-app px-4;
+}
+
+@utility page-layout {
+  @apply mx-auto w-full max-w-7xl px-4;
+}
+
+@utility reader-layout {
+  width: min(96vw, 1800px);
+  margin-inline: auto;
+}
+
+@utility surface-panel {
+  @apply rounded-[28px] border border-border bg-surface shadow-[0_18px_60px_rgba(15,22,33,0.08)] backdrop-blur-xl;
+}
+
+@utility surface-panel-strong {
+  @apply rounded-[28px] border border-border bg-surface-strong shadow-[0_18px_60px_rgba(15,22,33,0.12)] backdrop-blur-xl;
+}
+
+@utility taxonomy-chip {
+  @apply inline-flex items-center rounded-full border border-border bg-background/70 px-3 py-1 text-xs tracking-[0.18em] text-foreground/70 uppercase transition-colors hover:border-accent hover:text-accent;
+}
+
+@layer components {
+  .section-label {
+    @apply text-xs tracking-[0.24em] text-foreground/50 uppercase;
+  }
+
+  .section-title {
+    @apply text-2xl font-semibold tracking-tight sm:text-3xl;
+  }
+
+  .display-title {
+    @apply text-4xl leading-tight font-semibold tracking-tight sm:text-6xl;
+  }
+
+  .lead-copy {
+    @apply max-w-3xl text-base leading-7 text-foreground/72 sm:text-lg;
+  }
+
+  .metric-card {
+    @apply rounded-3xl border border-border bg-background/70 p-4;
+  }
+
+  .filter-button {
+    @apply rounded-full border border-border px-4 py-2 text-sm transition-colors;
+  }
+
+  .filter-button[data-active="true"] {
+    @apply border-accent bg-accent text-background;
+  }
+
+  .reader-action {
+    @apply inline-flex items-center rounded-full border border-border px-4 py-2 text-sm font-medium transition-colors hover:border-accent hover:text-accent;
+  }
+}
+
+/* Source: https://piccalil.li/blog/a-more-modern-css-reset/ */
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+  scroll-margin-block: 1rem;
+}

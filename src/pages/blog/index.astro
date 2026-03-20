@@ -1,0 +1,116 @@
+---
+import BlogListLayout from "@/layouts/BlogListLayout.astro";
+import BlogCard from "@/components/BlogCard.astro";
+import { getPublishedPosts, getTopLevelTaxonomies } from "@/lib/content";
+
+const posts = await getPublishedPosts();
+const topLevelTaxonomies = getTopLevelTaxonomies(posts);
+---
+
+<BlogListLayout
+  title="Blog"
+  eyebrow="PDF Index"
+  description="Structured research notes where metadata handles discovery and a full-width reader handles the actual PDF experience."
+>
+  <section class="mt-6 surface-panel px-5 py-6 sm:px-6">
+    <div class="section-label">Filter By Top-Level Taxonomy</div>
+    <div id="taxonomy-filters" class="mt-4 flex flex-wrap gap-2">
+      <a
+        href="/blog"
+        data-taxonomy-filter
+        data-value="all"
+        data-active="true"
+        class="filter-button"
+      >
+        All
+      </a>
+      {
+        topLevelTaxonomies.map(taxonomy => (
+          <a
+            href={`/blog?top=${encodeURIComponent(taxonomy)}`}
+            data-taxonomy-filter
+            data-value={taxonomy}
+            data-active="false"
+            class="filter-button"
+          >
+            {taxonomy}
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <ul id="blog-card-list" class="mt-6 grid gap-5 xl:grid-cols-2">
+    {posts.map(post => <BlogCard post={post} />)}
+  </ul>
+
+  <p
+    id="empty-state"
+    class="mt-6 hidden surface-panel px-5 py-6 text-sm text-foreground/68 sm:px-6"
+  >
+    No posts match the selected taxonomy filter yet.
+  </p>
+</BlogListLayout>
+
+<script>
+  function initBlogFilters() {
+    const buttons = Array.from(
+      document.querySelectorAll("a[data-taxonomy-filter]")
+    ) as HTMLAnchorElement[];
+    const cards = Array.from(
+      document.querySelectorAll("li[data-blog-card]")
+    ) as HTMLLIElement[];
+    const emptyState = document.querySelector(
+      "#empty-state"
+    ) as HTMLElement | null;
+
+    if (!buttons.length || !cards.length || !emptyState) return;
+
+    const applyFilter = (value: string) => {
+      const activeValue = value || "all";
+
+      cards.forEach(card => {
+        const taxonomies = (card.dataset.topLevels || "")
+          .split(",")
+          .filter(Boolean);
+        const shouldShow =
+          activeValue === "all" || taxonomies.includes(activeValue);
+
+        card.classList.toggle("hidden", !shouldShow);
+      });
+
+      buttons.forEach(button => {
+        button.dataset.active =
+          button.dataset.value === activeValue ? "true" : "false";
+      });
+
+      const hasVisibleCards = cards.some(
+        card => !card.classList.contains("hidden")
+      );
+      emptyState.classList.toggle("hidden", hasVisibleCards);
+    };
+
+    const searchParams = new URLSearchParams(window.location.search);
+    applyFilter(searchParams.get("top") || "all");
+
+    buttons.forEach(button => {
+      if (button.dataset.bound === "true") return;
+
+      button.dataset.bound = "true";
+
+      button.addEventListener("click", event => {
+        event.preventDefault();
+
+        const value = button.dataset.value || "all";
+        const nextUrl =
+          value === "all" ? "/blog" : `/blog?top=${encodeURIComponent(value)}`;
+
+        window.history.replaceState({}, "", nextUrl);
+        applyFilter(value);
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initBlogFilters);
+  document.addEventListener("astro:after-swap", initBlogFilters);
+</script>

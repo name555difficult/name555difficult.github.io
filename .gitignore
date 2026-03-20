@@ -1,0 +1,42 @@
+# build output
+dist/
+
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# local bootstrap / automation artifacts
+.tmp-init/
+.playwright-cli/
+output/
+
+# local source pdf copied into the public asset pipeline
+/test.pdf
+
+# local notes and template leftovers not needed in the site repo
+/demand.md
+/.vscode/
+/AstroPaper-lighthouse-score.svg
+/CHANGELOG.md
+/Dockerfile
+/docker-compose.yml
+/cz.yaml
+/pnpm-lock.yaml

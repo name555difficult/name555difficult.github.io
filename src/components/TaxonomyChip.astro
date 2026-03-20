@@ -1,0 +1,21 @@
+---
+type Props = {
+  path: string;
+  href?: string;
+  size?: "sm" | "md";
+};
+
+const { path, href, size = "md" } = Astro.props;
+const label = path.split("/").join(" / ");
+const Tag = href ? "a" : "span";
+---
+
+<Tag
+  href={href}
+  class:list={[
+    "taxonomy-chip",
+    { "px-2.5 py-1 text-[0.68rem]": size === "sm" },
+  ]}
+>
+  {label}
+</Tag>

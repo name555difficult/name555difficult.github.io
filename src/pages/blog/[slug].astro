@@ -1,0 +1,19 @@
+---
+import PdfPostLayout from "@/layouts/PdfPostLayout.astro";
+import { getPublishedPosts } from "@/lib/content";
+import { getRelatedPosts } from "@/lib/related";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+
+  return posts.map(post => ({
+    params: { slug: post.id.split("/").at(-1) ?? post.id },
+    props: { post, posts },
+  }));
+}
+
+const { post, posts } = Astro.props;
+const relatedPosts = getRelatedPosts(post, posts);
+---
+
+<PdfPostLayout post={post} relatedPosts={relatedPosts} />

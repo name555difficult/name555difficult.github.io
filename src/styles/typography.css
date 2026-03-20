@@ -1,0 +1,38 @@
+@plugin "@tailwindcss/typography";
+
+@layer base {
+  .app-prose {
+    @apply prose;
+    @apply max-w-none prose-headings:text-foreground prose-p:text-foreground/78 prose-a:text-accent prose-strong:text-foreground prose-li:text-foreground/76;
+
+    h2,
+    h3 {
+      @apply tracking-tight;
+    }
+
+    a {
+      @apply decoration-dashed underline-offset-4;
+    }
+
+    code {
+      @apply rounded bg-muted/70 px-1.5 py-0.5 text-sm;
+    }
+
+    pre {
+      @apply rounded-3xl border border-border bg-muted/60 p-4;
+    }
+
+    blockquote {
+      @apply border-s-2 border-accent pl-4 text-foreground/72 italic;
+    }
+
+    table {
+      @apply text-sm;
+
+      th,
+      td {
+        @apply border border-border p-2;
+      }
+    }
+  }
+}

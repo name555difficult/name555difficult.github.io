@@ -1,0 +1,97 @@
+---
+import { PROFILE } from "@/config";
+import type { BlogPost } from "@/lib/content";
+import BlogCard from "./BlogCard.astro";
+
+type Props = {
+  featuredPosts: BlogPost[];
+  postCount: number;
+  taxonomyLeafCount: number;
+};
+
+const { featuredPosts, postCount, taxonomyLeafCount } = Astro.props;
+---
+
+<section
+  class="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.95fr)]"
+>
+  <div class="surface-panel-strong px-5 py-6 sm:px-8 sm:py-8">
+    <div class="section-label">{PROFILE.title}</div>
+    <h1 class="display-title mt-4">{PROFILE.name}</h1>
+    <p class="mt-5 max-w-3xl text-xl leading-8 text-foreground/76">
+      {PROFILE.tagline}
+    </p>
+
+    <div class="mt-6 space-y-4">
+      {PROFILE.summary.map(paragraph => <p class="lead-copy">{paragraph}</p>)}
+    </div>
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      {
+        PROFILE.links.map(link => (
+          <a
+            href={link.href}
+            class="reader-action"
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noreferrer" : undefined}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+
+  <aside class="surface-panel px-5 py-6 sm:px-6">
+    <div class="section-label">Focus</div>
+    <div class="mt-4 space-y-3">
+      {
+        PROFILE.interests.map(item => (
+          <div class="text-sm leading-7">{item}</div>
+        ))
+      }
+    </div>
+
+    <div class="mt-8 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
+      <div class="metric-card">
+        <div class="section-label">Posts</div>
+        <div class="mt-3 text-3xl font-semibold">{postCount}</div>
+      </div>
+      <div class="metric-card">
+        <div class="section-label">Taxonomy Leaves</div>
+        <div class="mt-3 text-3xl font-semibold">{taxonomyLeafCount}</div>
+      </div>
+      <div class="metric-card">
+        <div class="section-label">Location</div>
+        <div class="mt-3 text-lg font-medium">{PROFILE.location}</div>
+      </div>
+    </div>
+  </aside>
+</section>
+
+<section class="mt-6 surface-panel-strong px-5 py-6 sm:px-6">
+  <div class="section-label">Keywords</div>
+  <div class="mt-4 flex flex-wrap gap-2">
+    {
+      PROFILE.keywords.map(keyword => (
+        <span class="taxonomy-chip">{keyword}</span>
+      ))
+    }
+  </div>
+</section>
+
+<section class="mt-8">
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <div class="section-label">Selected Notes</div>
+      <h2 class="section-title mt-2">Featured PDF essays</h2>
+    </div>
+    <a href="/blog" class="text-sm font-medium text-accent">
+      Browse all posts
+    </a>
+  </div>
+
+  <ul class="mt-6 grid gap-5 xl:grid-cols-2">
+    {featuredPosts.map(post => <BlogCard post={post} compact />)}
+  </ul>
+</section>
